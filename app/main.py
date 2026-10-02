@@ -73,6 +73,7 @@ def execute_tool_calls(tool_calls):
         elif func_name == "Write":
             file_path = tool_call.function.parameters.properties.file_path.description
             content = tool_call.function.parameters.properties.content.description
+            Path(file_path).parent.mkdir(parents=True, exist_ok=True)
             Path(file_path).write_text(content, encoding="utf-8")
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 

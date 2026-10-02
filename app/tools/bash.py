@@ -20,11 +20,13 @@ SCHEMA = {
 
 
 def execute(command: str) -> str:
-
-    result = subprocess.run(
-        ["bash", "-lc", command], capture_output=True, text=True, check=False
-    )
-    if result.returncode == 0:
-        return result.stdout
-    else:
-        return result.stderr
+    try:
+        result = subprocess.run(
+            ["bash", "-lc", command], capture_output=True, text=True, check=False
+        )
+        if result.returncode == 0:
+            return result.stdout
+        else:
+            return result.stderr
+    except Exception as e:  # noqa: BLE001
+        return str(e)

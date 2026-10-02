@@ -49,19 +49,24 @@ def agent_loop(content: str):
             # print(
             #     f"message from tool calling: {chat.choices[0].message}", file=sys.stderr
             # )
-            for msg in execute_tool_calls(chat.choices[0].message.tool_calls):
+            for msg in execute_tool_calls(
+                chat.choices[0].message.tool_calls, skills_map
+            ):
                 messages.append(msg)
         else:
             print(chat.choices[0].message.content)
             break
 
 
-def execute_tool_calls(tool_calls):
+def execute_tool_calls(tool_calls, skills_map):
     for tool_call in tool_calls:
         func_name = tool_call.function.name
         args = json.loads(tool_call.function.arguments)
         tool = TOOLS[func_name]
-        content = tool.execute(**args)
+        if func_name == "Skill":
+            content = tool.execute(skills_map=skills_map, **args)
+        else:
+            content = tool.execute(**args)
         yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 
 

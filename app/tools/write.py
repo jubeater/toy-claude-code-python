@@ -24,6 +24,10 @@ SCHEMA = {
 
 
 def execute(file_path: str, content: str) -> str:
-    Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-    Path(file_path).write_text(content, encoding="utf-8")
+    try:
+        Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(file_path).write_text(content, encoding="utf-8")
+    except Exception as e:  # noqa: BLE001
+        content = str(e)
+
     return content

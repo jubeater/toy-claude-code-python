@@ -35,15 +35,15 @@ def load_skills_signature(folder_path: str):
                                 2
                             ].strip()
             # print(f"--- Save skill of name: {name} ---", file=sys.stderr)
-            skills_signature += f"- {name}: {description}\n"
+            skills_signature += f"- {name}: {description}\n\n"
             if not name:
                 continue
             skill_map[name] = skill_path
-
+    skills_signature += "If a skill matches the user's request, call the Skill tool with its name and follow the instructions it returns.\n"
     return skill_map, skills_signature
 
 
-def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str | None:
+def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str:
     pattern_all = r"\$ARGUMENTS"
     pattern_single = r"\$ARGUMENTS\[(\d+)\]"
     pattern_short = r"\$(\d+)"
@@ -74,7 +74,7 @@ def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str 
                     # )
                     contents += line
         return contents
-    return None
+    return f"Skill {skill_name} no found!"
 
 
 def get_arg(match: re.Match[str], skill_args: list[str]) -> str:

@@ -71,6 +71,7 @@ def execute_tool_calls(tool_calls):
             content = Path(file_path).read_text(encoding="utf-8")
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
         elif func_name == "Write":
+            print("trying to do the write call", file=sys.stderr)
             file_path = tool_call.function.parameters.properties.file_path.description
             content = tool_call.function.parameters.properties.content.description
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)

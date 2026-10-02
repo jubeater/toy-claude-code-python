@@ -27,6 +27,6 @@ def execute(name: str, skills_map, args: str = "") -> str:
     try:
         args_list = args.strip().split()
         content = load_skill(skills_map[name], name, args_list)
-        return content
+        return f"Skill: {name} (located at {skills_map[name].parent})\n{content}"
     except Exception as e:  # noqa: BLE001
         return str(e)

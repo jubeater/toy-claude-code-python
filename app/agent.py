@@ -3,7 +3,7 @@ import os
 
 from openai import OpenAI
 
-from .skills import load_skills_signature
+from .skills import load_skill, load_skills_signature
 from .tools import SCHEMAS, TOOLS
 
 API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -15,12 +15,16 @@ def agent_loop(content: str):
         raise RuntimeError("OPENROUTER_API_KEY is not set")
 
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
-    skills_signature = load_skills_signature(
+    skills_map, skills_signature = load_skills_signature(
         ".claude/skills/"
     )  # will only works for linux and macos but since it only test for linux will not change it for now
+    real_content = content
+    if content.startswith("/"):
+        skill_name = content.strip().partition("/")[2]
+        real_content = load_skill(skills_map[skill_name])
     messages = [
         {"role": "system", "content": skills_signature},
-        {"role": "user", "content": content},
+        {"role": "user", "content": real_content},
     ]
     while True:
         chat = client.chat.completions.create(

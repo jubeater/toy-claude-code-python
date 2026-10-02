@@ -64,9 +64,9 @@ def execute_tool_calls(tool_calls, skills_map):
         args = json.loads(tool_call.function.arguments)
         tool = TOOLS[func_name]
         if func_name == "Skill":
-            import sys
+            # import sys
 
-            print(f"args before skill calling: {args}", file=sys.stderr)
+            # print(f"args before skill calling: {args}", file=sys.stderr)
             content = tool.execute(skills_map=skills_map, **args)
         else:
             content = tool.execute(**args)

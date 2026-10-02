@@ -21,7 +21,7 @@ def agent_loop(content: str):
     real_content = content
     if content.startswith("/"):
         skills_info = content.strip().split(" ")
-        skill_name = skills_info[0]
+        skill_name = skills_info[0].partition("/")[2]
         skill_args = skills_info[1:]
         real_content = load_skill(skills_map[skill_name], skill_args)
 

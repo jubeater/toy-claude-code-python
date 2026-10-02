@@ -33,6 +33,9 @@ def agent_loop(content: str):
     else:
         messages.append({"role": "user", "content": content})
 
+    import sys
+
+    print(f"message before tool calling: {messages}", file=sys.stderr)
     while True:
         chat = client.chat.completions.create(
             model="anthropic/claude-haiku-4.5",

@@ -25,10 +25,12 @@ def load_skills_signature(folder_path: str):
                             inside_delimiter = True
                             continue
                     if inside_delimiter:
-                        if clean_line.startswith("name: "):
-                            name = clean_line.partition("name:")[2]
+                        if clean_line.startswith("name:"):
+                            name = clean_line.partition("name: ")[2].strip()
                         elif clean_line.startswith("description:"):
-                            description = clean_line.partition("description:")[2]
+                            description = clean_line.partition("description: ")[
+                                2
+                            ].strip()
             print(f"--- Save skill of name: {name} ---", file=sys.stderr)
             skills_signature += f"- {name}: {description}"
             skill_map[name] = skill_path

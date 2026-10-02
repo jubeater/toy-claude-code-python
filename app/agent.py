@@ -33,8 +33,6 @@ def agent_loop(content: str):
     else:
         messages.append({"role": "user", "content": content})
 
-    import sys
-
     # print(f"message before tool calling: {messages}", file=sys.stderr)
     while True:
         chat = client.chat.completions.create(
@@ -47,13 +45,10 @@ def agent_loop(content: str):
 
         messages.append(chat.choices[0].message)
 
-        # You can use print statements as follows for debugging, they'll be visible when running tests.
-        # print("Logs from your program will appear here!", file=sys.stderr)
-
         if chat.choices[0].message.tool_calls:
-            print(
-                f"message from tool calling: {chat.choices[0].message}", file=sys.stderr
-            )
+            # print(
+            #     f"message from tool calling: {chat.choices[0].message}", file=sys.stderr
+            # )
             for msg in execute_tool_calls(chat.choices[0].message.tool_calls):
                 messages.append(msg)
         else:

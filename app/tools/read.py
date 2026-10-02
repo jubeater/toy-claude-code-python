@@ -20,4 +20,8 @@ SCHEMA = {
 
 
 def execute(file_path: str) -> str:
-    return Path(file_path).read_text(encoding="utf-8")
+    try:
+        content = Path(file_path).read_text(encoding="utf-8")
+    except Exception as e:  # noqa: BLE001
+        content = str(e)
+    return content

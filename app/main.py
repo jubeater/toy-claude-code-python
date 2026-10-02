@@ -51,7 +51,7 @@ def main():
     while True:
         messages.append(chat.choices[0].message)
         # You can use print statements as follows for debugging, they'll be visible when running tests.
-        print("Logs from your program will appear here!", file=sys.stderr)
+        # print("Logs from your program will appear here!", file=sys.stderr)
 
         if chat.choices[0].message.tool_calls:
             result_gen = execute_tool_calls(chat.choices[0].message.tool_calls)

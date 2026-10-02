@@ -48,7 +48,7 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
     pattern_single = r"\$ARGUMENTS\[\d+\]"
     pattern_short = r"\$\d+"
     all_args = " ".join(skill_args).strip()
-    print(f"--- prepare skill args: {all_args} ---", file=sys.stderr)
+    print(f"--- prepare skill args: {skill_args} ---", file=sys.stderr)
     if skill_path.exists() and skill_path.is_file():
         print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0

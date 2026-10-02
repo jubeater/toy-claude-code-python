@@ -65,7 +65,6 @@ def execute_tool_calls(tool_calls, skills_map):
         tool = TOOLS[func_name]
         if func_name == "Skill":
             # import sys
-
             # print(f"args before skill calling: {args}", file=sys.stderr)
             content = tool.execute(skills_map=skills_map, **args)
         else:

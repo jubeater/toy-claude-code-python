@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 import json
+import subprocess
 from pathlib import Path
 from openai import OpenAI
 
@@ -57,8 +58,25 @@ def main():
             },
         },
     }
+    bash_tool = {
+        "type": "function",
+        "function": {
+            "name": "Bash",
+            "description": "Execute a shell command",
+            "parameters": {
+                "type": "object",
+                "required": ["command"],
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "description": "The command to execute",
+                    }
+                },
+            },
+        },
+    }
     messages = [{"role": "user", "content": args.p}]
-    tools = [read_tool, write_tool]
+    tools = [read_tool, write_tool, bash_tool]
 
     while True:
         chat = client.chat.completions.create(
@@ -100,6 +118,14 @@ def execute_tool_calls(tool_calls):
             content = args["content"]
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
             Path(file_path).write_text(content, encoding="utf-8")
+            yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
+        elif func_name == "Bash":
+            cmd = args["command"]
+            result = subprocess.run([cmd], capture_output=True, text=True, check=False)
+            if result.returncode == 0:
+                content = result.stdout
+            else:
+                content = result.stderr
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 
 

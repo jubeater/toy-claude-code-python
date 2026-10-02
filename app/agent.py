@@ -62,14 +62,14 @@ def execute_tool_calls(tool_calls):
 
 
 def parse_skills(prompt: str, skills_map):
-    skills_info = prompt.strip().split(" ")
-    skill_end_idx = -1
-    for idx in range(len(skills_info)):
-        skill = skills_info[idx]
-        if skill.startswith("/") and skill[1:] in skills_map:
-            skill_end_idx = idx
+    tokens = prompt.strip().split()
+    skill_cnt = 0
+    for token in tokens:
+        if token.startswith("/") and token[1:] in skills_map:
+            skill_cnt += 1
         else:
             break
-    return [x[1:] for x in skills_info[: skill_end_idx + 1]], skills_info[
-        skill_end_idx + 1 :
-    ]
+    skills = [token[1:] for token in tokens[:skill_cnt]]
+    args = tokens[skill_cnt:]
+
+    return skills, args

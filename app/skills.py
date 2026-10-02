@@ -60,12 +60,12 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
                 elif delimiter_cnt == 2:
                     line = re.sub(
                         pattern_single,
-                        lambda match: skill_args[int(match.group(1))],
+                        lambda match: get_arg(match, skill_args),
                         line,
                     )
                     line = re.sub(
                         pattern_short,
-                        lambda match: skill_args[int(match.group(1))],
+                        lambda match: get_arg(match, skill_args),
                         line,
                     )
                     line = re.sub(pattern_all, all_args, line)
@@ -75,3 +75,8 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
                     contents += line
         return contents
     return None
+
+
+def get_arg(match: re.Match[str], skill_args: list[str]) -> str:
+    index = int(match.group(1))
+    return skill_args[index] if index < len(skill_args) else ""

@@ -36,23 +36,29 @@ def main():
             },
         },
     }
+    messages = [{"role": "user", "content": args.p}]
+    tools = [read_tool]
 
     chat = client.chat.completions.create(
         model="anthropic/claude-haiku-4.5",
-        messages=[{"role": "user", "content": args.p}],
-        tools=[read_tool],
+        messages=messages,
+        tools=tools,
     )
 
     if not chat.choices or len(chat.choices) == 0:
         raise RuntimeError("no choices in response")
 
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
-    print("Logs from your program will appear here!", file=sys.stderr)
+    while True:
+        messages.append(chat.choices[0].message)
+        # You can use print statements as follows for debugging, they'll be visible when running tests.
+        print("Logs from your program will appear here!", file=sys.stderr)
 
-    if chat.choices[0].message.tool_calls:
-        execute_tool_calls(chat.choices[0].message.tool_calls)
-    else:
-        print(chat.choices[0].message.content)
+        if chat.choices[0].message.tool_calls:
+            result_gen = execute_tool_calls(chat.choices[0].message.tool_calls)
+            messages.extend(result_gen)
+        else:
+            print(chat.choices[0].message.content)
+            break
 
 
 def execute_tool_calls(tool_calls):
@@ -62,7 +68,7 @@ def execute_tool_calls(tool_calls):
         if func_name == "Read":
             file_path = args["file_path"]
             contents = Path(file_path).read_text(encoding="utf-8")
-            print(contents)
+            yield {"role": "tool", "tool_call_id": tool_call.id, "content": contents}
 
 
 if __name__ == "__main__":

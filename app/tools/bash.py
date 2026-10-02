@@ -1,6 +1,6 @@
 import subprocess
 
-bash_tool = {
+SCHEMA = {
     "type": "function",
     "function": {
         "name": "Bash",

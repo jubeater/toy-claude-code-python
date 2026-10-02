@@ -1,6 +1,6 @@
 from pathlib import Path
 
-write_tool = {
+SCHEMA = {
     "type": "function",
     "function": {
         "name": "Write",

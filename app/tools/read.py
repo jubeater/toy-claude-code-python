@@ -1,6 +1,6 @@
 from pathlib import Path
 
-read_tool = {
+SCHEMA = {
     "type": "function",
     "function": {
         "name": "Read",

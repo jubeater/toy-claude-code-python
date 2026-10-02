@@ -56,7 +56,7 @@ def main():
         if chat.choices[0].message.tool_calls:
             result_gen = execute_tool_calls(chat.choices[0].message.tool_calls)
             for msg in result_gen:
-                messages.append(msg)
+                messages.append(msg.copy())
         else:
             print(chat.choices[0].message.content)
             break
@@ -65,11 +65,16 @@ def main():
 def execute_tool_calls(tool_calls):
     for tool_call in tool_calls:
         func_name = tool_call.function.name
-        args = json.loads(tool_call.function.arguments)
         if func_name == "Read":
+            args = json.loads(tool_call.function.arguments)
             file_path = args["file_path"]
-            contents = Path(file_path).read_text(encoding="utf-8")
-            yield {"role": "tool", "tool_call_id": tool_call.id, "content": contents}
+            content = Path(file_path).read_text(encoding="utf-8")
+            yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
+        elif func_name == "Write":
+            file_path = tool_call.function.parameters.properties.file_path.description
+            content = tool_call.function.parameters.properties.content.description
+            Path(file_path).write_text(content, encoding="utf-8")
+            yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 
 
 if __name__ == "__main__":

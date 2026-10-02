@@ -121,7 +121,9 @@ def execute_tool_calls(tool_calls):
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
         elif func_name == "Bash":
             cmd = args["command"]
-            result = subprocess.run([cmd], capture_output=True, text=True, check=False)
+            result = subprocess.run(
+                cmd.split(), capture_output=True, text=True, check=False
+            )
             if result.returncode == 0:
                 content = result.stdout
             else:

@@ -74,7 +74,7 @@ def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str:
                     # )
                     contents += line
         return contents
-    return f"Skill {skill_name} no found!"
+    return f"Skill {skill_name} not found!"
 
 
 def get_arg(match: re.Match[str], skill_args: list[str]) -> str:

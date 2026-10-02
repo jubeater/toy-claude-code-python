@@ -36,8 +36,29 @@ def main():
             },
         },
     }
+    write_tool = {
+        "type": "function",
+        "function": {
+            "name": "Write",
+            "description": "Write content to a file",
+            "parameters": {
+                "type": "object",
+                "required": ["file_path", "content"],
+                "properties": {
+                    "file_path": {
+                        "type": "string",
+                        "description": "The path of the file to write to",
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The content to write to the file",
+                    },
+                },
+            },
+        },
+    }
     messages = [{"role": "user", "content": args.p}]
-    tools = [read_tool]
+    tools = [read_tool, write_tool]
 
     while True:
         chat = client.chat.completions.create(

@@ -90,19 +90,16 @@ def main():
 def execute_tool_calls(tool_calls):
     for tool_call in tool_calls:
         func_name = tool_call.function.name
+        args = json.loads(tool_call.function.arguments)
         if func_name == "Read":
-            args = json.loads(tool_call.function.arguments)
             file_path = args["file_path"]
             content = Path(file_path).read_text(encoding="utf-8")
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
         elif func_name == "Write":
-            print("trying to do the write call", file=sys.stderr)
-            file_path = tool_call.function.parameters.properties.file_path.description
-            content = tool_call.function.parameters.properties.content.description
+            file_path = args["file_path"]
+            content = args["content"]
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-            print("create dir if needed", file=sys.stderr)
             Path(file_path).write_text(content, encoding="utf-8")
-            print("trying to write contents", file=sys.stderr)
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 
 

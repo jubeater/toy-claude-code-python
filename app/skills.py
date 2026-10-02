@@ -34,7 +34,7 @@ def load_skills_signature(folder_path: str):
                                 2
                             ].strip()
             print(f"--- Save skill of name: {name} ---", file=sys.stderr)
-            skills_signature += f"- {name}: {description}"
+            skills_signature += f"- {name}: {description}\n"
             if not name:
                 continue
             skill_map[name] = skill_path

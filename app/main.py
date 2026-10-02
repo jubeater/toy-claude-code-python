@@ -39,23 +39,24 @@ def main():
     messages = [{"role": "user", "content": args.p}]
     tools = [read_tool]
 
-    chat = client.chat.completions.create(
-        model="anthropic/claude-haiku-4.5",
-        messages=messages,
-        tools=tools,
-    )
-
-    if not chat.choices or len(chat.choices) == 0:
-        raise RuntimeError("no choices in response")
-
     while True:
+        chat = client.chat.completions.create(
+            model="anthropic/claude-haiku-4.5",
+            messages=messages,
+            tools=tools,
+        )
+        if not chat.choices or len(chat.choices) == 0:
+            raise RuntimeError("no choices in response")
+
         messages.append(chat.choices[0].message)
+
         # You can use print statements as follows for debugging, they'll be visible when running tests.
         # print("Logs from your program will appear here!", file=sys.stderr)
 
         if chat.choices[0].message.tool_calls:
             result_gen = execute_tool_calls(chat.choices[0].message.tool_calls)
-            messages.extend(result_gen)
+            for msg in result_gen:
+                messages.append(msg)
         else:
             print(chat.choices[0].message.content)
             break

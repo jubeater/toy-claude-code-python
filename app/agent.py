@@ -24,9 +24,12 @@ def agent_loop(content: str):
 
     if content.startswith("/"):
         skills, skill_args = parse_skills(content, skills_map)
-        for skill in skills:
-            skill_content = load_skill(skills_map[skill], skill_args)
-            messages.append({"role": "user", "content": skill_content})
+        if skills:
+            for skill in skills:
+                skill_content = load_skill(skills_map[skill], skill, skill_args)
+                messages.append({"role": "user", "content": skill_content})
+        else:
+            messages.append({"role": "user", "content": content})
     else:
         messages.append({"role": "user", "content": content})
 

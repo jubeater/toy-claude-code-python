@@ -13,7 +13,7 @@ def load_skills_signature(folder_path: str):
         inside_delimiter = False
         skill_path = f / "SKILL.md"
         if skill_path.exists() and skill_path.is_file():
-            print(f"--- Reading Skill: {skill_path.name} ---", file=sys.stderr)
+            # print(f"--- Reading Skill: {skill_path.name} ---", file=sys.stderr)
             name = ""
             description = ""
 
@@ -34,7 +34,7 @@ def load_skills_signature(folder_path: str):
                             description = clean_line.partition("description:")[
                                 2
                             ].strip()
-            print(f"--- Save skill of name: {name} ---", file=sys.stderr)
+            # print(f"--- Save skill of name: {name} ---", file=sys.stderr)
             skills_signature += f"- {name}: {description}\n"
             if not name:
                 continue
@@ -43,16 +43,16 @@ def load_skills_signature(folder_path: str):
     return skill_map, skills_signature
 
 
-def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
+def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str | None:
     pattern_all = r"\$ARGUMENTS"
     pattern_single = r"\$ARGUMENTS\[(\d+)\]"
     pattern_short = r"\$(\d+)"
     all_args = " ".join(skill_args).strip()
-    print(f"--- prepare skill args: {skill_args} ---", file=sys.stderr)
+    # print(f"--- prepare skill args: {skill_args} ---", file=sys.stderr)
     if skill_path.exists() and skill_path.is_file():
-        print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
+        # print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
-        contents = ""
+        contents = f"Skill: {skill_name} (located at {(skill_path.parent)!s})\n"
         with skill_path.open(encoding="utf-8") as file:
             for line in file:
                 if delimiter_cnt < 2 and line.strip() == "---":
@@ -69,9 +69,9 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
                         line,
                     )
                     line = re.sub(pattern_all, all_args, line)
-                    print(
-                        f"--- get final skill description: {line} ---", file=sys.stderr
-                    )
+                    # print(
+                    #     f"--- get final skill description: {line} ---", file=sys.stderr
+                    # )
                     contents += line
         return contents
     return None

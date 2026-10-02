@@ -45,8 +45,8 @@ def load_skills_signature(folder_path: str):
 
 def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
     pattern_all = r"\$ARGUMENTS"
-    pattern_single = r"\$ARGUMENTS\[\d+\]"
-    pattern_short = r"\$\d+"
+    pattern_single = r"\$ARGUMENTS\[(\d+)\]"
+    pattern_short = r"\$(\d+)"
     all_args = " ".join(skill_args).strip()
     print(f"--- prepare skill args: {skill_args} ---", file=sys.stderr)
     if skill_path.exists() and skill_path.is_file():

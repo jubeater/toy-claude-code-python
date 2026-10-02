@@ -1,4 +1,4 @@
-from skills import load_skill
+from ..skills import load_skill
 
 SCHEMA = {
     "type": "function",

@@ -1,3 +1,4 @@
+import re
 import sys
 from pathlib import Path
 
@@ -42,7 +43,11 @@ def load_skills_signature(folder_path: str):
     return skill_map, skills_signature
 
 
-def load_skill(skill_path: Path) -> str | None:
+def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
+    pattern_all = r"$ARGUMENTS"
+    pattern_single = r"$ARGUMENTS[\d{1+}]"
+    pattern_short = r"$\d{1+}"
+    all_args = " ".join(skill_args).strip()
     if skill_path.exists() and skill_path.is_file():
         print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
@@ -52,6 +57,17 @@ def load_skill(skill_path: Path) -> str | None:
                 if delimiter_cnt < 2 and line.strip() == "---":
                     delimiter_cnt += 1
                 elif delimiter_cnt == 2:
+                    line = re.sub(
+                        pattern_single,
+                        lambda match: skill_args[int(match.group(1))],
+                        line,
+                    )
+                    line = re.sub(
+                        pattern_short,
+                        lambda match: skill_args[int(match.group(1))],
+                        line,
+                    )
+                    line = re.sub(pattern_all, all_args, line)
                     contents += line
         return contents
     return None

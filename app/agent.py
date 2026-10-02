@@ -20,8 +20,10 @@ def agent_loop(content: str):
     )  # will only works for linux and macos but since it only test for linux will not change it for now
     real_content = content
     if content.startswith("/"):
-        skill_name = content.strip().partition("/")[2]
-        real_content = load_skill(skills_map[skill_name])
+        skills_info = content.strip().split(" ")
+        skill_name = skills_info[0]
+        skill_args = skills_info[1:]
+        real_content = load_skill(skills_map[skill_name], skill_args)
 
     messages = []
     if skills_signature:

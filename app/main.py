@@ -74,7 +74,9 @@ def execute_tool_calls(tool_calls):
             file_path = tool_call.function.parameters.properties.file_path.description
             content = tool_call.function.parameters.properties.content.description
             Path(file_path).parent.mkdir(parents=True, exist_ok=True)
+            print("create dir if needed", file=sys.stderr)
             Path(file_path).write_text(content, encoding="utf-8")
+            print("trying to write contents", file=sys.stderr)
             yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
 
 

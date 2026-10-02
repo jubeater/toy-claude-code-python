@@ -18,17 +18,17 @@ def agent_loop(content: str):
     skills_map, skills_signature = load_skills_signature(
         ".claude/skills/"
     )  # will only works for linux and macos but since it only test for linux will not change it for now
-    real_content = content
-    if content.startswith("/"):
-        skills_info = content.strip().split(" ")
-        skill_name = skills_info[0].partition("/")[2]
-        skill_args = skills_info[1:]
-        real_content = load_skill(skills_map[skill_name], skill_args)
-
     messages = []
     if skills_signature:
         messages.append({"role": "system", "content": skills_signature})
-    messages.append({"role": "user", "content": real_content})
+
+    if content.startswith("/"):
+        skills, skill_args = parse_skills(content, skills_map)
+        for skill in skills:
+            skill_content = load_skill(skills_map[skill], skill_args)
+            messages.append({"role": "user", "content": skill_content})
+    else:
+        messages.append({"role": "user", "content": content})
 
     while True:
         chat = client.chat.completions.create(
@@ -59,3 +59,17 @@ def execute_tool_calls(tool_calls):
         tool = TOOLS[func_name]
         content = tool.execute(**args)
         yield {"role": "tool", "tool_call_id": tool_call.id, "content": content}
+
+
+def parse_skills(prompt: str, skills_map):
+    skills_info = prompt.strip().split(" ")
+    skill_end_idx = -1
+    for idx in range(len(skills_info)):
+        skill = skills_info[idx]
+        if skill.startswith("/") and skill[1:] in skills_map:
+            skill_end_idx = idx
+        else:
+            break
+    return [x[1:] for x in skills_info[: skill_end_idx + 1]], skills_info[
+        skill_end_idx + 1 :
+    ]

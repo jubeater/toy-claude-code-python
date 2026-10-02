@@ -35,7 +35,7 @@ def agent_loop(content: str):
 
     import sys
 
-    print(f"message before tool calling: {messages}", file=sys.stderr)
+    # print(f"message before tool calling: {messages}", file=sys.stderr)
     while True:
         chat = client.chat.completions.create(
             model="anthropic/claude-haiku-4.5",
@@ -51,6 +51,9 @@ def agent_loop(content: str):
         # print("Logs from your program will appear here!", file=sys.stderr)
 
         if chat.choices[0].message.tool_calls:
+            print(
+                f"message from tool calling: {chat.choices[0].message}", file=sys.stderr
+            )
             for msg in execute_tool_calls(chat.choices[0].message.tool_calls):
                 messages.append(msg)
         else:

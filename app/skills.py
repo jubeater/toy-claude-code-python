@@ -48,6 +48,7 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
     pattern_single = r"$ARGUMENTS[\d{1+}]"
     pattern_short = r"$\d{1+}"
     all_args = " ".join(skill_args).strip()
+    print(f"--- prepare skill args: {all_args} ---", file=sys.stderr)
     if skill_path.exists() and skill_path.is_file():
         print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
@@ -68,6 +69,9 @@ def load_skill(skill_path: Path, skill_args: list[str]) -> str | None:
                         line,
                     )
                     line = re.sub(pattern_all, all_args, line)
+                    print(
+                        f"--- get final skill description: {line} ---", file=sys.stderr
+                    )
                     contents += line
         return contents
     return None

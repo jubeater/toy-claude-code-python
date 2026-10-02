@@ -54,6 +54,10 @@ def main():
         # print("Logs from your program will appear here!", file=sys.stderr)
 
         if chat.choices[0].message.tool_calls:
+            print(
+                f"tools calls are: {chat.choices[0].message.tool_calls}",
+                file=sys.stderr,
+            )
             result_gen = execute_tool_calls(chat.choices[0].message.tool_calls)
             for msg in result_gen:
                 messages.append(msg.copy())

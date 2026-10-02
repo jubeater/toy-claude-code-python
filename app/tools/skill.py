@@ -23,7 +23,7 @@ SCHEMA = {
 }
 
 
-def execute(name: str, args: str, skills_map) -> str:
+def execute(name: str, skills_map, args="") -> str:
     try:
         args_list = args.strip().split()
         content = load_skill(skills_map[name], name, args_list)

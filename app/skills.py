@@ -4,6 +4,8 @@ from pathlib import Path
 
 def load_skills_signature(folder_path: str):
     folder = Path(folder_path)
+    if not folder.is_dir():
+        return {}, ""
     skills_signature = "You have access to the following skills:\n\n"
     skill_map = {}
     for f in folder.iterdir():
@@ -26,19 +28,21 @@ def load_skills_signature(folder_path: str):
                             continue
                     if inside_delimiter:
                         if clean_line.startswith("name:"):
-                            name = clean_line.partition("name: ")[2].strip()
+                            name = clean_line.partition("name:")[2].strip()
                         elif clean_line.startswith("description:"):
-                            description = clean_line.partition("description: ")[
+                            description = clean_line.partition("description:")[
                                 2
                             ].strip()
             print(f"--- Save skill of name: {name} ---", file=sys.stderr)
             skills_signature += f"- {name}: {description}"
+            if not name:
+                continue
             skill_map[name] = skill_path
 
     return skill_map, skills_signature
 
 
-def load_skill(skill_path: Path):
+def load_skill(skill_path: Path) -> str | None:
     if skill_path.exists() and skill_path.is_file():
         print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
@@ -50,3 +54,4 @@ def load_skill(skill_path: Path):
                 elif delimiter_cnt == 2:
                     contents += line
         return contents
+    return None

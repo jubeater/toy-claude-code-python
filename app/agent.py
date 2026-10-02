@@ -22,10 +22,12 @@ def agent_loop(content: str):
     if content.startswith("/"):
         skill_name = content.strip().partition("/")[2]
         real_content = load_skill(skills_map[skill_name])
-    messages = [
-        {"role": "system", "content": skills_signature},
-        {"role": "user", "content": real_content},
-    ]
+
+    messages = []
+    if skills_signature:
+        messages.append({"role": "system", "content": skills_signature})
+    messages.append({"role": "user", "content": real_content})
+
     while True:
         chat = client.chat.completions.create(
             model="anthropic/claude-haiku-4.5",

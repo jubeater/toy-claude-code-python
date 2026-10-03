@@ -1,5 +1,14 @@
 import re
+from dataclasses import dataclass
 from pathlib import Path
+
+
+@dataclass
+class SkillInfo:
+    path: Path
+    name: str
+    description: str
+    using_fork: bool = False
 
 
 def load_skills_signature(folder_path: str):
@@ -40,11 +49,8 @@ def load_skills_signature(folder_path: str):
             skills_signature += f"- {name}: {description}\n\n"
             if not name:
                 continue
-            skills_map[name] = {
-                "path": skill_path,
-                "using_fork": using_fork,
-                "name": name,
-            }
+            skills_map[name] = SkillInfo(skill_path, name, description, using_fork)
+
     skills_signature += "If a skill matches the user's request, call the Skill tool with its name and follow the instructions it returns.\n"
     return skills_map, skills_signature
 

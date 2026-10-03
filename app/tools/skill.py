@@ -1,4 +1,4 @@
-from ..skills import load_skill
+from ..skills import SkillInfo, load_skill
 
 SCHEMA = {
     "type": "function",
@@ -23,9 +23,11 @@ SCHEMA = {
 }
 
 
-def execute(name: str, skills_map, run_subagent, args: str = "") -> str:
+def execute(
+    name: str, skills_map: dict[str, SkillInfo], run_subagent, args: str = ""
+) -> str:
     try:
-        skill_path = skills_map[name]["path"]
+        skill_path = skills_map[name].path
         args_list = args.strip().split()
         body = load_skill(
             skill_path,
@@ -33,10 +35,10 @@ def execute(name: str, skills_map, run_subagent, args: str = "") -> str:
             args_list,
         )
         # however you expose context from frontmatter
-        if skills_map[name]["using_fork"]:
+        if skills_map[name].using_fork:
             answer = run_subagent(body)
             return f"Skill {name} ran in a separate context and returned: {answer}"
 
-        return f"Skill: {name} (located at {skills_map[name]['path'].parent})\n{body}"
+        return f"Skill: {name} (located at {skill_path.parent})\n{body}"
     except Exception as e:  # noqa: BLE001
         return str(e)

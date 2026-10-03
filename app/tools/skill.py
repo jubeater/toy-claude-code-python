@@ -27,7 +27,8 @@ def execute(
     name: str, skills_map: dict[str, SkillInfo], run_subagent, args: str = ""
 ) -> str:
     try:
-        skill_path = skills_map[name].path
+        skill = skills_map[name]
+        skill_path = skill.path
         args_list = args.strip().split()
         body = load_skill(
             skill_path,
@@ -35,7 +36,7 @@ def execute(
             args_list,
         )
         # however you expose context from frontmatter
-        if skills_map[name].using_fork:
+        if skill.using_fork:
             answer = run_subagent(body)
             return f"Skill {name} ran in a separate context and returned: {answer}"
 

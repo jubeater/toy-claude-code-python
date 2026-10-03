@@ -26,7 +26,8 @@ def agent_init(content: str):
         skills, skill_args = parse_skills(content, skills_map)
         if skills:
             for skill in skills:
-                skill_content = load_skill(skills_map[skill].path, skill, skill_args)
+                skill_info = skills_map[skill]
+                skill_content = load_skill(skill_info.path, skill, skill_args)
                 messages.append({"role": "user", "content": skill_content})
         else:
             messages.append({"role": "user", "content": content})

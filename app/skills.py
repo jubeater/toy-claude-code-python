@@ -11,7 +11,7 @@ class SkillInfo:
     using_fork: bool = False
 
 
-def load_skills_signature(folder_path: str):
+def load_skills_signature(folder_path: str) -> tuple[dict[str, SkillInfo], str]:
     folder = Path(folder_path)
     if not folder.is_dir():
         return {}, ""

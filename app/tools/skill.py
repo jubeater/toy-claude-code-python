@@ -25,15 +25,15 @@ SCHEMA = {
 
 def execute(name: str, skills_map, run_subagent, args: str = "") -> str:
     try:
-        skill_path = skills_map[name]
+        skill_path = skills_map[name]["path"]
         args_list = args.strip().split()
-        body, using_fork = load_skill(
+        body = load_skill(
             skill_path,
             name,
             args_list,
         )
         # however you expose context from frontmatter
-        if using_fork:
+        if skills_map[name]["using_fork"]:
             answer = run_subagent(body)
             return f"Skill {name} ran in a separate context and returned: {answer}"
 

@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 from ..skills import SkillInfo, load_skill
 
 SCHEMA = {
@@ -24,7 +26,10 @@ SCHEMA = {
 
 
 def execute(
-    name: str, skills_map: dict[str, SkillInfo], run_subagent, args: str = ""
+    name: str,
+    skills_map: dict[str, SkillInfo],
+    run_subagent: Callable[[str], str],
+    args: str = "",
 ) -> str:
     try:
         skill = skills_map[name]

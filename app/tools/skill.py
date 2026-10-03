@@ -23,10 +23,20 @@ SCHEMA = {
 }
 
 
-def execute(name: str, skills_map, args: str = "") -> str:
+def execute(name: str, skills_map, run_subagent, args: str = "") -> str:
     try:
+        skill_path = skills_map[name]
         args_list = args.strip().split()
-        content = load_skill(skills_map[name], name, args_list)
-        return f"Skill: {name} (located at {skills_map[name].parent})\n{content}"
+        body, using_fork = load_skill(
+            skill_path,
+            name,
+            args_list,
+        )
+        # however you expose context from frontmatter
+        if using_fork:
+            answer = run_subagent(body)
+            return f"Skill {name} ran in a separate context and returned: {answer}"
+
+        return f"Skill: {name} (located at {skills_map[name].parent})\n{body}"
     except Exception as e:  # noqa: BLE001
         return str(e)

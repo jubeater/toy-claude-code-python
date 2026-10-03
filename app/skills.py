@@ -42,20 +42,26 @@ def load_skills_signature(folder_path: str):
     return skill_map, skills_signature
 
 
-def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str:
+def load_skill(
+    skill_path: Path, skill_name: str, skill_args: list[str]
+) -> tuple[str, bool]:
     pattern_all = r"\$ARGUMENTS"
     pattern_single = r"\$ARGUMENTS\[(\d+)\]"
     pattern_short = r"\$(\d+)"
+    fork_marker = "context: fork"
     all_args = " ".join(skill_args).strip()
     # print(f"--- prepare skill args: {skill_args} ---", file=sys.stderr)
     if skill_path.exists() and skill_path.is_file():
         # print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
         contents = f"Skill: {skill_name} (located at {(skill_path.parent)!s})\n"
+        using_fork = False
         with skill_path.open(encoding="utf-8") as file:
             for line in file:
                 if delimiter_cnt < 2 and line.strip() == "---":
                     delimiter_cnt += 1
+                elif delimiter_cnt < 2 and fork_marker in line.strip():
+                    using_fork = True
                 elif delimiter_cnt == 2:
                     line = re.sub(
                         pattern_single,
@@ -72,8 +78,8 @@ def load_skill(skill_path: Path, skill_name: str, skill_args: list[str]) -> str:
                     #     f"--- get final skill description: {line} ---", file=sys.stderr
                     # )
                     contents += line
-        return contents
-    return f"Skill {skill_name} not found!"
+        return contents, using_fork
+    return f"Skill {skill_name} not found!", False
 
 
 def get_arg(match: re.Match[str], skill_args: list[str]) -> str:

@@ -37,6 +37,6 @@ def execute(name: str, skills_map, run_subagent, args: str = "") -> str:
             answer = run_subagent(body)
             return f"Skill {name} ran in a separate context and returned: {answer}"
 
-        return f"Skill: {name} (located at {skills_map[name].parent})\n{body}"
+        return f"Skill: {name} (located at {skills_map[name]['path'].parent})\n{body}"
     except Exception as e:  # noqa: BLE001
         return str(e)

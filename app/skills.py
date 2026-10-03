@@ -54,13 +54,13 @@ def load_skill(
     if skill_path.exists() and skill_path.is_file():
         # print(f"--- Loading Skill Content: {skill_path.name} ---", file=sys.stderr)
         delimiter_cnt = 0
-        contents = f"Skill: {skill_name} (located at {(skill_path.parent)!s})\n"
+        contents = ""
         using_fork = False
         with skill_path.open(encoding="utf-8") as file:
             for line in file:
                 if delimiter_cnt < 2 and line.strip() == "---":
                     delimiter_cnt += 1
-                elif delimiter_cnt < 2 and fork_marker in line.strip():
+                elif delimiter_cnt < 2 and line.strip() == fork_marker:
                     using_fork = True
                 elif delimiter_cnt == 2:
                     line = re.sub(
